@@ -30,7 +30,7 @@ warehouses = list(raw['Warehouse'].unique())
 
 
 def visualize_orders_by_attribute(attr_name):
-    attr_values = list(raw['attr_name'].unique())
+    attr_values = list(raw[attr_name].unique())
     for attr_value in attr_values:
         df = raw[raw[attr_name] == attr_value]
         df['Date'] = pd.to_datetime(df['Date'])
@@ -41,9 +41,9 @@ def visualize_orders_by_attribute(attr_name):
 
         print "agg_orders:{}".format(agg_orders)
         fig = plt.figure(1, figsize=[14, 7])
-        plt.ylabel('Orders per category')
+        plt.ylabel('Orders per {}'.format(attr_name))
         plt.xlabel('Day')
-        plt.title('Orders in Category {}'.format(category))
+        plt.title('Orders in {} {}'.format(attr_name, attr_value))
         plt.plot(dates, agg_orders)
         plt.legend()
         plt.show()
@@ -74,7 +74,7 @@ def visualize_product_trend(product_code):
     plt.show()
 
 
-visualize_product_trend('Product_0183')
+#visualize_product_trend('Product_0183')
 
 
 
