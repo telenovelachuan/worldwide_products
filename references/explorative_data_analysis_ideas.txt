@@ -1,4 +1,4 @@
-1. plot the order trend by product category
+1. plot the order trend by product category and warehouse
 2. pick some product entries by category to look at
 3. pick out the most ordered product by category, plot their order trend
 4. autocorrelation, partial autocorrelation
