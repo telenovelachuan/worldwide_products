@@ -24,12 +24,29 @@ def aggregate_order_for_df(cat_df):
             date_pt = row['Date']
             sum_pt = 0
         else:
-            sum_pt += int(row['Order_Demand'].replace("(", "").replace(")", ""))
+            sum_pt += int(row['Order_Demand'])
     return result
 
 
 def agg_by_month(attr, attr_value, return_raw=False):
     df = raw[raw[attr] == attr_value]
+    df['Date'] = pd.to_datetime(df['Date'])
+    df = df.sort_values(by=['Date']).dropna()
+    df = df.set_index('Date')
+    df.groupby(pd.Grouper(freq="M"))
+    sum = df.groupby(pd.Grouper(freq="M")).sum()
+    data = list(sum['Order_Demand'])
+    dates = list(sum.index)
+    if return_raw is True:
+        return sum['Order_Demand'], dates
+    return data, dates
+
+
+def agg_attrs_by_month(attr_dict, return_raw=False):
+    df = raw
+    for attr in attr_dict:
+        df = df[df[attr] == attr_dict[attr]]
+
     df['Date'] = pd.to_datetime(df['Date'])
     df = df.sort_values(by=['Date']).dropna()
     df = df.set_index('Date')
@@ -88,6 +105,7 @@ def visualize_product_trend(product_code):
 
 
 #visualize_product_trend('Product_0183')
+visualize_product_trend('Product_0606')
 
 
 '''
@@ -106,34 +124,34 @@ autocorrelations
 from statsmodels.tsa.stattools import acf
 from statsmodels.tsa.stattools import pacf
 from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
-# for product in most_ordered_products_by_ctg:
-#     df = raw[raw.Product_Code == product]
-#     df['Date'] = pd.to_datetime(df['Date'])
-#     df = df.sort_values(by=['Date']).dropna()
-#     agg_orders = aggregate_order_for_df(df)
-#     dates = sorted(list(df['Date'].unique()))
-#
-#     fig = plt.figure(1, figsize=[10, 5])
-#     ax1 = fig.add_subplot(121)
-#     ax2 = fig.add_subplot(122)
-#     data = np.array(agg_orders)
-#     print "data:{}".format(data)
-#     data_diff = [data[i] - data[i - 1] for i in range(1, len(data))]
-#     print "data_diff:{}".format(data_diff)
-#     autocorr = acf(data_diff)
-#     pac = pacf(data_diff)
-#
-#     x = [x for x in range(len(pac))]
-#     ax1.plot(x[1:], autocorr[1:])
-#
-#     ax2.plot(x[1:], pac[1:])
-#     ax1.set_xlabel('Lag')
-#     ax1.set_ylabel('Autocorrelation')
-#     ax1.set_title(product)
-#
-#     ax2.set_xlabel('Lag')
-#     ax2.set_ylabel('Partial Autocorrelation')
-#     plt.show()
+for product in most_ordered_products_by_ctg:
+    df = raw[raw.Product_Code == product]
+    df['Date'] = pd.to_datetime(df['Date'])
+    df = df.sort_values(by=['Date']).dropna()
+    agg_orders = aggregate_order_for_df(df)
+    dates = sorted(list(df['Date'].unique()))
+
+    fig = plt.figure(1, figsize=[10, 5])
+    ax1 = fig.add_subplot(121)
+    ax2 = fig.add_subplot(122)
+    data = np.array(agg_orders)
+    print "data:{}".format(data)
+    data_diff = [data[i] - data[i - 1] for i in range(1, len(data))]
+    print "data_diff:{}".format(data_diff)
+    autocorr = acf(data_diff)
+    pac = pacf(data_diff)
+
+    x = [x for x in range(len(pac))]
+    ax1.plot(x[1:], autocorr[1:])
+
+    ax2.plot(x[1:], pac[1:])
+    ax1.set_xlabel('Lag')
+    ax1.set_ylabel('Autocorrelation')
+    ax1.set_title(product)
+
+    ax2.set_xlabel('Lag')
+    ax2.set_ylabel('Partial Autocorrelation')
+    plt.show()
 
 
 # def plot_attr_value(attr, attr_value):
@@ -154,14 +172,14 @@ the order trend by month
 
 
 # products = ['Product_000{}'.format(i) for i in range(1, 9)]
-# for product in most_ordered_products_by_ctg:
-#     data, dates = agg_by_month('Product_Code', product)
-#     fig = plt.figure(1, figsize=[14, 7])
-#     plt.ylabel('Orders')
-#     # plt.xlabel('')
-#     plt.title('Orders of product {} by month'.format(product))
-#     plt.plot(dates, data)
-#     plt.show()
+for product in most_ordered_products_by_ctg:
+    data, dates = agg_by_month('Product_Code', product)
+    fig = plt.figure(1, figsize=[14, 7])
+    plt.ylabel('Orders')
+    # plt.xlabel('')
+    plt.title('Orders of product {} by month'.format(product))
+    plt.plot(dates, data)
+    plt.show()
 
 '''
 shifting
@@ -198,3 +216,19 @@ def compare_attr_by_month(attr):
 
 #compare_attr_by_month('Product_Category')
 #compare_attr_by_month('Warehouse')
+
+'''
+comparing warehouse on product
+'''
+def compare_prod_by_warehouse(product):
+    df = raw[raw['Product_Code'] == product]
+    unique_values = list(df['Warehouse'].unique())
+    for value in unique_values:
+        agg_data, dates = agg_attrs_by_month({'Warehouse': value}, return_raw=True)
+        plot = agg_data.plot(legend=True)
+    plot.legend(unique_values)
+    plt.title('Monthly order trends on {} by warehouses'.format(product))
+    plt.show()
+
+
+compare_prod_by_warehouse('Product_0243')
