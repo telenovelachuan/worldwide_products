@@ -6,6 +6,7 @@ from statsmodels.tsa.arima_model import ARIMA
 from sklearn.metrics import mean_squared_error
 from statsmodels.tsa.stattools import acf
 from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
+from joblib import dump
 
 
 '''
@@ -88,9 +89,10 @@ print('p-value: %f' % result[1])
 # p-value: 0.00, can set differencing to 0
 
 
-model = ARIMA(df, order=(2, 1, 1))
+model = ARIMA(df, order=(3, 2, 1))
 model_fit = model.fit()
 print model_fit.summary()
+model_fit.save("../models/ARIMA_3_2_1.pickle")
 # plot residual errors
 residuals = pd.DataFrame(model_fit.resid)
 fig, ax = plt.subplots(1, 2)
@@ -178,6 +180,7 @@ def train_regression_model_n_predict(attr_dict):
     X_poly = poly_features.fit_transform(X_train)
     lin_reg = LinearRegression()
     lin_reg.fit(X_poly, Y_train)
+    dump(lin_reg, '../models/polynomial.joblib')
     print "polynomial intercept: {}, polynomial coef: {}".format(lin_reg.intercept_, lin_reg.coef_)
     X_test = [[x * 2] for x in range(len(train.index), len(train.index) + len(test.index))]
     X_poly_test = poly_features.fit_transform(X_test)
@@ -193,6 +196,6 @@ def train_regression_model_n_predict(attr_dict):
     plt.show()
 
 
-
+train_regression_model_n_predict({'Product_Code': 'Product_0606'})
 
 
