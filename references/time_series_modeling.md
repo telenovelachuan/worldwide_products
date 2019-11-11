@@ -45,12 +45,12 @@ Used the ARIMA model implemented in statsmodels package, to apply on aggregated 
 
 3. Polynomial Regression
 
-Tried linear regression(Polynomial) on the dataset, just to serve as a comparison. Used PolynomialFeatures by sklearn to wrap a polynomial mapping into linear regression.
+Tried linear regression(Polynomial) on the dataset, just to serve as a comparison. Used PolynomialFeatures by sklearn to wrap a linear regression layer outside a polynomial mapping.
 
-I tried tuning the polynomial degree, and it's obvious that it's difficult for polynomial mapping to fit the frequent zigzag patterns in time series dataset. Predictions are also smooth curves, meaning that it underfits the characteristic patterns presented by time series. Anyway linear regression here is only for reference.
+I tried tuning the polynomial degree, and it's obvious that it's difficult for any polynomial mapping to fit the frequent zigzag patterns in time series dataset. Also, predictions by polynomial models are also smooth curves, meaning that it underfits the characteristic patterns presented by time series. Anyway linear regression here is only for reference.
 
 Just come out with several thoughts here on improving linear regression:
 
 - In order to fit better and learn more about the time series trend, the linear regression should take more into its independent variable, such as lagged difference. And this improvement would be the rudimentary thought of ARIMA or ARMA models.
-- Another way to improve is to integrate linear regression with decomposition, since the trend in decomposition result is more often suitable for a polynomial fit. So the final model would be an ensemble of linear regression(polynomial), the seasonal and a residual noise. While on the other hand, it's required to build another 2 models for seasonals and residuals each.
+- Another way of improvement is to integrate linear regression with decomposition, since the trend part in decomposition result is more often suitable for a polynomial fit. So the final model would be an ensemble of linear regression(polynomial) on trend, the seasonal and a residual noise. Then on the other hand, it's required to build another 2 models for seasonals and residuals respectively.
 
