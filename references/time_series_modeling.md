@@ -1,8 +1,11 @@
 Use time series models to predict order number based on other features and chronicle trend
 
 Models used:
+
 1. Decomposition
+
 Aggregated all data points into monthly basis, and utilized the seasonal_decomposition package by statsmodels to plot decomposed sections of the order trends by different attribute combinations.
+
 Tried decomposition on:
 	- Daily level data of warehouse A
 	
@@ -29,3 +32,23 @@ Tried decomposition on:
 	A 2-journey trend observed: continuously descending until Dec 2014, and then gradually ascending till now. For the seasonals, every May sees a yearly spike, following a yearly minimum in every July, quite fluctuating. Maybe the product is extremely dependent on seasonality.
 
 2. ARIMA
+
+Used the ARIMA model implemented in statsmodels package, and apply on aggregated monthly data of different attribute value combinations
+
+- use Augmented Dickey Fuller test, and the p-value is larger than 0.05 so differencing is needed
+- tried an ARIMA model with p, d, q starting as 2, 1, 1 on product Product_0606 monthly data. Used the trained model to predict training data, and found it's not sensitive on spikes and valleys.
+- tuned several sets of parameters and set p, d, q to be 3, 2, 1. Retrain model and use it to predict the test set. Predictions generally guesses the trend right, but not so good on extreme values: spikes and valleys.
+- used the same set of parameter to fit monthly data of Product_0458 in warehouse Whse_S. Since test data does not contain abrupt spikes, the predictions are quite good, going not far alongside actual values.
+- did the same training & prediction on the entire monthly data on warehouse Whse_S. The predictions are quite accurate about the descending trend, but lacking detailed zigzags as actual values display.
+- finally tried the model on predicting monthly trend for category: Category_017. The model successfully predicts the ascending spike at May 2016(though with a different spike size)...but overestimates the order numbers in the following months.
+
+3. Polynomial Regression
+
+Tried linear regression(Polynomial) on the dataset, just to serve as a comparison. Used PolynomialFeatures by sklearn to wrap a polynomial mapping into linear regression.
+
+I tried tuning the polynomial degree, and it's obvious that it's difficult for polynomial mapping to fit the frequent zigzag patterns in time series dataset. Predictions are also smooth curves, meaning that it underfits the characteristic patterns presented by time series. Anyway linear regression here is only for reference.
+
+Just come out with several thoughts here on improving linear regression.
+- In order to fit better and learn more about the time series trend, the linear regression should take more into its independent variable, such as lagged difference. And this improvement would be the rudimentary thought of ARIMA or ARMA models.
+- Another way to improve is to integrate linear regression with decomposition, since the trend in decomposition result is more often suitable for a polynomial fit. So the final model would be an ensemble of linear regression(polynomial), the seasonal and a residual noise. While on the other hand, it's required to build another 2 models for seasonals and residuals each.
+
