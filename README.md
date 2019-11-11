@@ -26,34 +26,34 @@ Aggregated all data points into monthly basis, and utilized the seasonal_decompo
 
 Tried decomposition on:
 
-	* Daily level data of warehouse A
+- Daily level data of warehouse A
 	
-	* Daily level data of category Category_028
+- Daily level data of category Category_028
 	
-	* Daily level data of product Product_0606(which is a mostly-ordered product in its category)
+- Daily level data of product Product_0606(which is a mostly-ordered product in its category)
 	
-	* Monthly level data of product Product_0606(mostly-ordered product in its category)
+- Monthly level data of product Product_0606(mostly-ordered product in its category)
 	
-	* Monthly level data of product Product_1101(mostly-ordered product in its category)
+- Monthly level data of product Product_1101(mostly-ordered product in its category)
 	
-	* Monthly level data of product Product_1361(mostly-ordered product in its category)
+- Monthly level data of product Product_1361(mostly-ordered product in its category)
 	
 	
 2. ARIMA
 
 Used the ARIMA model implemented in statsmodels package, to apply on aggregated monthly data of different attribute value combinations.
 
-	* used Augmented Dickey Fuller test, and found that the p-value is larger than 0.05 so differencing was needed
+- used Augmented Dickey Fuller test, and found that the p-value is larger than 0.05 so differencing was needed
 	
-	* tried an ARIMA model with p, d, q starting as 2, 1, 1 on product Product_0606 monthly data. Used the trained model to predict training data, and found it's not sensitive on spikes and valleys.
+- tried an ARIMA model with p, d, q starting as 2, 1, 1 on product Product_0606 monthly data. Used the trained model to predict training data, and found it's not sensitive on spikes and valleys.
 	
-	* tuned several sets of parameters and set p, d, q to be 3, 2, 1. Retrain model and use it to predict the test set. Predictions generally guesses the trend right, but not so good on extreme values: spikes and valleys.
+- tuned several sets of parameters and set p, d, q to be 3, 2, 1. Retrain model and use it to predict the test set. Predictions generally guesses the trend right, but not so good on extreme values: spikes and valleys.
 	
-	* used the same set of parameter to fit monthly data of Product_0458 in warehouse Whse_S. Since test data does not contain abrupt spikes, the predictions are quite good, going not far alongside actual values.
+- used the same set of parameter to fit monthly data of Product_0458 in warehouse Whse_S. Since test data does not contain abrupt spikes, the predictions are quite good, going not far alongside actual values.
 	
-	* did the same training & prediction on the entire monthly data on warehouse Whse_S. The predictions are quite accurate about the descending trend, but lacking detailed zigzags as actual values display.
+- did the same training & prediction on the entire monthly data on warehouse Whse_S. The predictions are quite accurate about the descending trend, but lacking detailed zigzags as actual values display.
 	
-	* finally tried the model on predicting monthly trend for category: Category_017. The model successfully predicts the ascending spike at May 2016(though with a different spike size)...but overestimates the order numbers in the following months.
+- finally tried the model on predicting monthly trend for category: Category_017. The model successfully predicts the ascending spike at May 2016(though with a different spike size)...but overestimates the order numbers in the following months.
 	
 
 3. Polynomial Regression
