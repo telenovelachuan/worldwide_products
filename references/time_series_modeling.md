@@ -8,29 +8,29 @@ Aggregated all data points into monthly basis, and utilized the seasonal_decompo
 
 Tried decomposition on:
 
-	- Daily level data of warehouse A
+- Daily level data of warehouse A
 	
-	Trend data spiked around the end of 2015, and seasonal data are quite static.
+Trend data spiked around the end of 2015, and seasonal data are quite static.
 	
-	- Daily level data of category Category_028
+- Daily level data of category Category_028
 	
-	Trend data spiked around the end of 2015, and extremely repetitive pattern on seasonal data observed.
+Trend data spiked around the end of 2015, and extremely repetitive pattern on seasonal data observed.
 	
-	- Daily level data of product Product_0606(which is a mostly-ordered product in its category)
+- Daily level data of product Product_0606(which is a mostly-ordered product in its category)
 	
-	A generally ascending trend observed, indicating its growing product popularity. But seasonals are not that predictable.
+A generally ascending trend observed, indicating its growing product popularity. But seasonals are not that predictable.
 	
-	- Monthly level data of product Product_0606(mostly-ordered product in its category)
+- Monthly level data of product Product_0606(mostly-ordered product in its category)
 	
-	An ascending trend, and seasonals are quite interesting: 3 spikes are observed respectively on every November, every February and every May.
+An ascending trend, and seasonals are quite interesting: 3 spikes are observed respectively on every November, every February and every May.
 	
-	- Monthly level data of product Product_1101(mostly-ordered product in its category)
+- Monthly level data of product Product_1101(mostly-ordered product in its category)
 	
-	A bell shape observed on trend, with kurtosis approximately during Dec 2014. For the seasonals, exremely regular pattern displayed: 4 spikes per year respectively on February, April, July and December, and 3 valleys on every March, June and September.
+A bell shape observed on trend, with kurtosis approximately during Dec 2014. For the seasonals, exremely regular pattern displayed: 4 spikes per year respectively on February, April, July and December, and 3 valleys on every March, June and September.
 	
-	- Monthly level data of product Product_1361(mostly-ordered product in its category)
+- Monthly level data of product Product_1361(mostly-ordered product in its category)
 	
-	A 2-journey trend observed: continuously descending until Dec 2014, and then gradually ascending till now. For the seasonals, every May sees a yearly spike, following a yearly minimum in every July, quite fluctuating. Maybe the product is extremely dependent on seasonality.
+A 2-journey trend observed: continuously descending until Dec 2014, and then gradually ascending till now. For the seasonals, every May sees a yearly spike, following a yearly minimum in every July, quite fluctuating. Maybe the product is extremely dependent on seasonality.
 
 2. ARIMA
 
@@ -49,7 +49,7 @@ Tried linear regression(Polynomial) on the dataset, just to serve as a compariso
 
 I tried tuning the polynomial degree, and it's obvious that it's difficult for polynomial mapping to fit the frequent zigzag patterns in time series dataset. Predictions are also smooth curves, meaning that it underfits the characteristic patterns presented by time series. Anyway linear regression here is only for reference.
 
-Just come out with several thoughts here on improving linear regression.
+Just come out with several thoughts here on improving linear regression:
 
 - In order to fit better and learn more about the time series trend, the linear regression should take more into its independent variable, such as lagged difference. And this improvement would be the rudimentary thought of ARIMA or ARMA models.
 - Another way to improve is to integrate linear regression with decomposition, since the trend in decomposition result is more often suitable for a polynomial fit. So the final model would be an ensemble of linear regression(polynomial), the seasonal and a residual noise. While on the other hand, it's required to build another 2 models for seasonals and residuals each.
